@@ -1,27 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dpanov <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/02/16 16:02:06 by dpanov            #+#    #+#             */
-/*   Updated: 2017/02/16 16:02:08 by dpanov           ###   ########.fr       */
+/*   Created: 2016/11/23 16:38:39 by dpanov            #+#    #+#             */
+/*   Updated: 2016/11/23 16:38:40 by dpanov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef _FT_GET_NEXT_LINE_FT_
-#define _FT_GET_NEXT_LINE_FT_
-# include <stdlib.h>
-# include <unistd.h>
-# include "libft/libft.h"
-# define BUFF_SIZE 20
-typedef struct node {
-	char *str;
-	char *buff;
-	char *rez;
-	long readed;
-	int flag;
-}   node_t;
-int get_next_line(const int fd, char **line);
-#endif
+#include "libft.h"
+
+void	*ft_memset(void *s, int c, size_t n)
+{
+	size_t	i;
+	char	*tmp;
+
+	tmp = s;
+	i = 0;
+	while (i < n)
+	{
+		tmp[i] = c;
+		i++;
+	}
+	return (s);
+}

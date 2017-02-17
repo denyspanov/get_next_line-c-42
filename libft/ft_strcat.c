@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_strcat.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dpanov <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/02/16 16:02:06 by dpanov            #+#    #+#             */
-/*   Updated: 2017/02/16 16:02:08 by dpanov           ###   ########.fr       */
+/*   Created: 2016/11/23 14:34:20 by dpanov            #+#    #+#             */
+/*   Updated: 2016/11/23 14:34:20 by dpanov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef _FT_GET_NEXT_LINE_FT_
-#define _FT_GET_NEXT_LINE_FT_
-# include <stdlib.h>
-# include <unistd.h>
-# include "libft/libft.h"
-# define BUFF_SIZE 20
-typedef struct node {
-	char *str;
-	char *buff;
-	char *rez;
-	long readed;
-	int flag;
-}   node_t;
-int get_next_line(const int fd, char **line);
-#endif
+#include "libft.h"
+
+char	*ft_strcat(char *s1, const char *s2)
+{
+	size_t n;
+	size_t i;
+
+	i = 0;
+	n = ft_strlen(s1);
+	while (s2[i])
+	{
+		s1[i + n] = s2[i];
+		i++;
+	}
+	s1[i + n] = '\0';
+	return (s1);
+}

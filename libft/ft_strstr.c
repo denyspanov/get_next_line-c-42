@@ -1,27 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_strstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dpanov <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/02/16 16:02:06 by dpanov            #+#    #+#             */
-/*   Updated: 2017/02/16 16:02:08 by dpanov           ###   ########.fr       */
+/*   Created: 2016/10/04 20:37:04 by dpanov            #+#    #+#             */
+/*   Updated: 2016/10/04 20:37:36 by dpanov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef _FT_GET_NEXT_LINE_FT_
-#define _FT_GET_NEXT_LINE_FT_
-# include <stdlib.h>
-# include <unistd.h>
-# include "libft/libft.h"
-# define BUFF_SIZE 20
-typedef struct node {
-	char *str;
-	char *buff;
-	char *rez;
-	long readed;
-	int flag;
-}   node_t;
-int get_next_line(const int fd, char **line);
-#endif
+#include "libft.h"
+
+char	*ft_strstr(const char *big, const char *little)
+{
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	j = 0;
+	if (little[0] == '\0')
+		return ((char *)big);
+	while (big[i])
+	{
+		while (little[j] && big[i + j] && (big[i + j] == little[j]))
+		{
+			if (j == (ft_strlen(little) - 1))
+				return ((char *)&big[i]);
+			j++;
+		}
+		j = 0;
+		i++;
+	}
+	return (NULL);
+}
