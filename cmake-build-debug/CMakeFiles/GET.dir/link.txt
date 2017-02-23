@@ -1,1 +1,0 @@
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc  -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/GET.dir/main.c.o CMakeFiles/GET.dir/get_next_line.c.o CMakeFiles/GET.dir/libft/ft_strjoin.c.o CMakeFiles/GET.dir/libft/ft_strlen.c.o CMakeFiles/GET.dir/libft/ft_strnew.c.o  -o GET ../libft.a 

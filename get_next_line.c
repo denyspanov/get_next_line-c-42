@@ -6,91 +6,105 @@
 /*   By: dpanov <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 16:01:53 by dpanov            #+#    #+#             */
-/*   Updated: 2017/02/16 16:01:56 by dpanov           ###   ########.fr       */
+/*   Updated: 2017/02/22 19:21:10 by dpanov           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void d_m(node_t **head)
+char	**check_fd(int fd, t_node **node)
 {
-	(*head)->str = ft_strjoin((*head)->str,(*head)->buff);
+	t_node *tmp;
+
+	tmp = *node;
+	while (tmp)
+	{
+		if (tmp->fd == fd)
+			return (&(tmp->stock));
+		tmp = tmp->next;
+	}
+	if (!(tmp = (t_node *)malloc(sizeof(t_node))))
+		return (NULL);
+	tmp->stock = ft_strnew(1);
+	tmp->fd = fd;
+	tmp->next = (*node);
+	(*node) = tmp;
+	return (&(tmp->stock));
 }
 
-int	chec_enter(char *s)
+int		str_check(char **stock, char **line, int c)
+{
+	char *tmp_fj;
+
+	tmp_fj = *stock;
+	if ((*stock)[c] == '\n')
+	{
+		if (!(*line = ft_strsub(tmp_fj, 0, (unsigned int)c)))
+			return (-1);
+	}
+	else if (!(*line = ft_strdup(*stock)))
+		return (-1);
+	if (!(*stock = ft_strsub(tmp_fj, c + 1, (ft_strlen(*stock) - c))))
+		return (-1);
+	ft_strdel(&tmp_fj);
+	return (1);
+}
+
+int		str_c(char **stock, char **line, int c)
 {
 	int i;
 
-	i = 0;
-	while(s[i] != '\0')
-	{
-		if (s[i] == '\n')
-			return (i);
-		i++;
-	}
+	i = -1;
+	while ((*stock)[++i])
+		if ((*stock)[i] == '\n')
+			return (str_check(stock, line, i));
+	if (**stock && !c)
+		return (str_check(stock, line, i));
 	return (0);
 }
 
-void rezz(node_t **head)
+int		f_reader(int fd, char **line, char **stock, char *tmp_buff)
 {
-	int i;
-	int j;
+	int		ret;
+	char	*tmp_fj;
 
-	i = 0;
-	while((*head)->str[i] != '\0')
-	{
-		if ('\n' == (*head)->str[i])
-			break;
-		i++;
-	}
-	j = 0;
-	i++;
-	while((*head)->str[i] != '\0')
-	{
-		(*head)->str[j] = (*head)->str[i];
-		j++;
-		i++;
-	}
-	(*head)->str[j] = '\0';
+	if (!ft_strchr(*stock, '\n'))
+		while (read(fd, tmp_buff, BUFF_SIZE))
+		{
+			tmp_fj = *stock;
+			if (!(*stock = ft_strjoin(tmp_fj, tmp_buff)))
+			{
+				ft_strdel(&tmp_buff);
+				return (-1);
+			}
+			ft_strdel(&tmp_fj);
+			if ((ret = str_c(&(*stock), line, 1)))
+			{
+				ft_strdel(&tmp_buff);
+				return (ret);
+			}
+			ft_strclr(tmp_buff);
+		}
+	if ((ret = str_c(&(*stock), line, 0)))
+		return (ret);
+	ft_strdel(&tmp_buff);
+	return (0);
 }
 
-int get_next_line(const int fd, char **line)
+int		get_next_line(const int fd, char **line)
 {
-	static node_t *head = NULL;
+	static t_node	*node;
+	char			**stock;
+	char			*tmp_buff;
 
-	if (line == NULL || fd < 0 || BUFF_SIZE < 1)
+	if (BUFF_SIZE <= 0 || fd < 0 || line == NULL ||
+		!(tmp_buff = ft_strnew(BUFF_SIZE)))
 		return (-1);
-	if (head == NULL)
+	if ((read(fd, tmp_buff, 0) < 0))
 	{
-		head = (node_t *) malloc(sizeof(node_t));
-		head->rez = ft_strnew(1);
-		head->str = ft_strnew(1);
-		head->flag = 0;
-	}
-	if (!(head->buff = (char *)malloc(sizeof(char) * BUFF_SIZE)))
+		ft_strdel(&tmp_buff);
 		return (-1);
-	if (chec_enter(head->str))
-	{
-		*line = ft_strncpy(head->rez, head->str, chec_enter(head->str));
-		rezz(&head);
-		return (1);
 	}
-	while ((head->readed = read(fd,head->buff,BUFF_SIZE)) > 0)
-	{
-		d_m(&head);
-		if (chec_enter(head->str))
-		{
-			*line = ft_strncpy(head->rez,head->str, chec_enter(head->str));
-			rezz(&head);
-			return (1);
-		}
-	}
-	if (head->readed == 0 && head->flag == 0 && (chec_enter(head->str)))
-	{
-		*line = head->str;
-		head->flag++;
-		free(head->str);
-		return (1);
-	}
-	return (1);
+	stock = check_fd(fd, &node);
+	return (f_reader(fd, line, stock, tmp_buff));
 }
